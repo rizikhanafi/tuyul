@@ -331,7 +331,7 @@ function ImperialCityPage({ onBack }) {
       </main>
 
       <div className="ticks" />
-      <footer className="app-footer"><p>Built with ❤️ for tracking daily farming routines.</p></footer>
+      <footer className="app-footer"><p>Built with ❤️ for tracking daily farming routines. <span className="version">v1.1</span></p></footer>
     </div>
   );
 }
@@ -538,7 +538,7 @@ function Dashboard({ user, onLogout, onGoToImperialCity }) {
       </main>
 
       <div className="ticks" />
-      <footer className="app-footer"><p>Built with ❤️ for tracking daily farming routines.</p></footer>
+      <footer className="app-footer"><p>Built with ❤️ for tracking daily farming routines. <span className="version">v1.1</span></p></footer>
     </div>
   );
 }
