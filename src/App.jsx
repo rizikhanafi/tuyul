@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import './App.css';
 import {
   signup,
@@ -118,9 +119,19 @@ function App() {
     localStorage.removeItem('tuyul_user');
   };
 
-  if (!user) return <AuthPage onLogin={handleLogin} />;
+  if (!user) return (
+    <>
+      <AuthPage onLogin={handleLogin} />
+      <SpeedInsights />
+    </>
+  );
 
-  return <Dashboard user={user} onLogout={handleLogout} />;
+  return (
+    <>
+      <Dashboard user={user} onLogout={handleLogout} />
+      <SpeedInsights />
+    </>
+  );
 }
 
 /* ---------- dashboard ---------- */
