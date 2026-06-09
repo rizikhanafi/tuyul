@@ -1,19 +1,12 @@
 import express from 'express';
-import cors from 'cors';
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import { config } from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-config({ path: join(__dirname, '.env') });
+// Load .env locally (safe no-op on Vercel where env vars are injected)
+config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
-
-app.use(cors());
 app.use(express.json());
 
 const db = mysql.createPool({
@@ -21,17 +14,11 @@ const db = mysql.createPool({
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || '',
   database: process.env.MYSQL_DB || 'tuyul_db',
+  port: Number(process.env.MYSQL_PORT) || 3306,
   waitForConnections: true,
   connectionLimit: 10,
+  ssl: process.env.MYSQL_SSL === '1' ? { minVersion: 'TLSv1.2' } : undefined,
 });
-
-try {
-  const [rows] = await db.query('SELECT 1');
-  console.log('✅ MySQL connected');
-} catch (err) {
-  console.error('❌ MySQL connection failed:', err.message || err.code || err);
-  process.exit(1);
-}
 
 // ==================== AUTH ROUTES ====================
 
@@ -185,6 +172,19 @@ app.post('/api/reset-dungeons', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 API server running on http://localhost:${PORT}`);
-});
+// Local dev: start Express server directly
+// Vercel: app is imported by api/index.js as a serverless handler
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, async () => {
+    try {
+      await db.query('SELECT 1');
+      console.log(`✅ MySQL connected — 🚀 API server running on http://localhost:${PORT}`);
+    } catch (err) {
+      console.error('❌ MySQL connection failed:', err.message || err.code || err);
+      process.exit(1);
+    }
+  });
+}
+
+export default app;

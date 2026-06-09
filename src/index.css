@@ -25,21 +25,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Responsive breakpoints */
-  --mobile-breakpoint: 480px;
-  --tablet-breakpoint: 768px;
-  --laptop-breakpoint: 1024px;
-  --desktop-breakpoint: 1200px;
+}
 
-  @media (max-width: var(--laptop-breakpoint)) {
+@media (max-width: 1024px) {
+  :root {
     font-size: 16px;
   }
+}
 
-  @media (max-width: var(--tablet-breakpoint)) {
+@media (max-width: 768px) {
+  :root {
     font-size: 15px;
   }
+}
 
-  @media (max-width: var(--mobile-breakpoint)) {
+@media (max-width: 480px) {
+  :root {
     font-size: 14px;
   }
 }
@@ -106,17 +107,20 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
 }
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+  h2 {
     font-size: 20px;
   }
 }
