@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="blade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c0c0c0"/>
+      <stop offset="50%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#a0a0a0"/>
+    </linearGradient>
+    <linearGradient id="guard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5c542"/>
+      <stop offset="100%" style="stop-color:#c8920a"/>
+    </linearGradient>
+    <linearGradient id="handle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513"/>
+      <stop offset="100%" style="stop-color:#5C2D0E"/>
+    </linearGradient>
+    <linearGradient id="pommel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5c542"/>
+      <stop offset="100%" style="stop-color:#c8920a"/>
+    </linearGradient>
+  </defs>
+  <!-- Blade -->
+  <path d="M30 4 L34 4 L34 44 L32 48 L30 44 Z" fill="url(#blade)" stroke="#888" stroke-width="0.5"/>
+  <!-- Blade edge highlight -->
+  <path d="M31 5 L33 5 L33 43 L32 46 L31 43 Z" fill="rgba(255,255,255,0.3)"/>
+  <!-- Guard -->
+  <rect x="22" y="44" width="20" height="4" rx="1" fill="url(#guard)" stroke="#a0700a" stroke-width="0.5"/>
+  <!-- Handle -->
+  <rect x="29" y="48" width="6" height="10" rx="1" fill="url(#handle)" stroke="#3d1f08" stroke-width="0.5"/>
+  <!-- Pommel -->
+  <circle cx="32" cy="60" r="3" fill="url(#pommel)" stroke="#a0700a" stroke-width="0.5"/>
+  <!-- Grip wrapping lines -->
+  <line x1="30" y1="50" x2="34" y2="50" stroke="#3d1f08" stroke-width="0.4"/>
+  <line x1="30" y1="52" x2="34" y2="52" stroke="#3d1f08" stroke-width="0.4"/>
+  <line x1="30" y1="54" x2="34" y2="54" stroke="#3d1f08" stroke-width="0.4"/>
+  <!-- Sparkle -->
+  <circle cx="26" cy="12" r="1" fill="#fff" opacity="0.8"/>
+  <circle cx="38" cy="20" r="0.8" fill="#fff" opacity="0.6"/>
+</svg>
