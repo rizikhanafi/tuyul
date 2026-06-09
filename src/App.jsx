@@ -107,6 +107,7 @@ function App() {
     const saved = localStorage.getItem('tuyul_user');
     return saved ? JSON.parse(saved) : null;
   });
+  const [page, setPage] = useState('dashboard');
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -116,15 +117,227 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('tuyul_user');
+    setPage('dashboard');
   };
 
   if (!user) return <AuthPage onLogin={handleLogin} />;
 
-  return <Dashboard user={user} onLogout={handleLogout} />;
+  if (page === 'imperial-city') {
+    return <ImperialCityPage onBack={() => setPage('dashboard')} />;
+  }
+
+  return <Dashboard user={user} onLogout={handleLogout} onGoToImperialCity={() => setPage('imperial-city')} />;
+}
+
+/* ---------- imperial city page ---------- */
+
+// Shop rates: 5000 gold → 4000 wood  OR  5000 gold → 4000 stone
+const SHOP_GOLD_COST = 5000;
+const SHOP_RESOURCE_AMOUNT = 4000;
+
+const RESOURCES = [
+  { key: 'gold',  label: 'Gold',  emoji: '💰' },
+  { key: 'wood',  label: 'Wood',  emoji: '🪵' },
+  { key: 'stone', label: 'Stone', emoji: '🪨' },
+];
+
+function calcShop(goldHave, woodHave, stoneHave, goldNeed, woodNeed, stoneNeed) {
+  const woodMissing = Math.max(0, woodNeed - woodHave);
+  const stoneMissing = Math.max(0, stoneNeed - stoneHave);
+  const goldMissing = Math.max(0, goldNeed - goldHave);
+
+  // how many shop bundles needed (ceiling)
+  const woodBundles = Math.ceil(woodMissing / SHOP_RESOURCE_AMOUNT);
+  const stoneBundles = Math.ceil(stoneMissing / SHOP_RESOURCE_AMOUNT);
+  const shopGoldNeeded = (woodBundles + stoneBundles) * SHOP_GOLD_COST;
+
+  const woodBought = woodBundles * SHOP_RESOURCE_AMOUNT;
+  const stoneBought = stoneBundles * SHOP_RESOURCE_AMOUNT;
+
+  // total gold required = gold for upgrade + gold for shop - gold we have
+  const totalGoldRequired = goldNeed + shopGoldNeeded - goldHave;
+
+  // remaining resources after upgrade
+  const goldRemaining = Math.max(0, goldHave - goldNeed - shopGoldNeeded);
+  const woodRemaining = Math.max(0, woodHave + woodBought - woodNeed);
+  const stoneRemaining = Math.max(0, stoneHave + stoneBought - stoneNeed);
+  const hasRemaining = goldRemaining > 0 || woodRemaining > 0 || stoneRemaining > 0;
+
+  return { woodMissing, stoneMissing, goldMissing, woodBundles, stoneBundles, woodBought, stoneBought, shopGoldNeeded, totalGoldRequired, goldRemaining, woodRemaining, stoneRemaining, hasRemaining };
+}
+
+function ImperialCityPage({ onBack }) {
+  const [need, setNeed] = useState({ gold: 0, wood: 0, stone: 0 });
+  const [have, setHave] = useState({ gold: 0, wood: 0, stone: 0 });
+
+  const shop = calcShop(have.gold, have.wood, have.stone, need.gold, need.wood, need.stone);
+
+  const handleNeedChange = (key, value) => {
+    setNeed(prev => ({ ...prev, [key]: Math.max(0, Number(value) || 0) }));
+  };
+
+  const handleHaveChange = (key, value) => {
+    setHave(prev => ({ ...prev, [key]: Math.max(0, Number(value) || 0) }));
+  };
+
+  return (
+    <div className="dashboard-wrapper">
+      <header className="dashboard-header">
+        <div className="header-logo">
+          <span className="logo-emoji">🏰</span>
+          <div>
+            <h1>Imperial City</h1>
+            <p className="subtitle">Building Upgrade Calculator</p>
+          </div>
+        </div>
+        <div className="header-actions">
+          <button onClick={onBack} className="btn btn-outline">← Back</button>
+        </div>
+      </header>
+
+      <main className="dashboard-main">
+        {/* Resources needed */}
+        <section className="ic-section">
+          <h2 className="ic-section-title">📋 Resources Needed for New Level</h2>
+          <div className="ic-input-grid">
+            {RESOURCES.map(r => (
+              <div key={r.key} className="ic-input-field">
+                <label>{r.emoji} {r.label}</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={need[r.key] || ''}
+                  onChange={e => handleNeedChange(r.key, e.target.value)}
+                  placeholder="0"
+                  className="ic-input"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* What you have */}
+        <section className="ic-section">
+          <h2 className="ic-section-title">🎒 What You Have</h2>
+          <div className="ic-input-grid">
+            {RESOURCES.map(r => (
+              <div key={r.key} className="ic-input-field">
+                <label>{r.emoji} {r.label}</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={have[r.key] || ''}
+                  onChange={e => handleHaveChange(r.key, e.target.value)}
+                  placeholder="0"
+                  className="ic-input"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Shop calculator */}
+        <section className="ic-section">
+          <h2 className="ic-section-title">🏪 Shop Exchange</h2>
+          <p className="ic-shop-rate">
+            Shop rate: <strong>{SHOP_GOLD_COST.toLocaleString()} Gold</strong> → <strong>{SHOP_RESOURCE_AMOUNT.toLocaleString()} Wood</strong> or <strong>{SHOP_RESOURCE_AMOUNT.toLocaleString()} Stone</strong>
+          </p>
+
+          {(shop.woodMissing > 0 || shop.stoneMissing > 0) ? (
+            <div className="ic-shop-result">
+              {/* Resources to buy */}
+              <div className="ic-shop-buy">
+                <h3>Resources to Buy</h3>
+                {shop.woodMissing > 0 && (
+                  <div className="ic-shop-row">
+                    <span>🪵 Wood</span>
+                    <span>Missing: <strong>{shop.woodMissing.toLocaleString()}</strong></span>
+                    <span>Buy: <strong>{shop.woodBundles}</strong> × {SHOP_RESOURCE_AMOUNT.toLocaleString()} = <strong>{shop.woodBought.toLocaleString()}</strong></span>
+                    <span>Cost: <strong className="gold-text">{(shop.woodBundles * SHOP_GOLD_COST).toLocaleString()} Gold</strong></span>
+                  </div>
+                )}
+                {shop.stoneMissing > 0 && (
+                  <div className="ic-shop-row">
+                    <span>🪨 Stone</span>
+                    <span>Missing: <strong>{shop.stoneMissing.toLocaleString()}</strong></span>
+                    <span>Buy: <strong>{shop.stoneBundles}</strong> × {SHOP_RESOURCE_AMOUNT.toLocaleString()} = <strong>{shop.stoneBought.toLocaleString()}</strong></span>
+                    <span>Cost: <strong className="gold-text">{(shop.stoneBundles * SHOP_GOLD_COST).toLocaleString()} Gold</strong></span>
+                  </div>
+                )}
+              </div>
+
+              {/* Summary */}
+              <div className={`ic-shop-summary ${shop.totalGoldRequired <= 0 ? 'ok' : 'short'}`}>
+                <div className="ic-summary-row">
+                  <span>Total gold needed (upgrade)</span>
+                  <span className="gold-text">{need.gold.toLocaleString()}</span>
+                </div>
+                <div className="ic-summary-row">
+                  <span>Total gold for shop</span>
+                  <span className="gold-text">{shop.shopGoldNeeded.toLocaleString()}</span>
+                </div>
+                <div className="ic-summary-row">
+                  <span>Your gold</span>
+                  <span className="ok-text">{have.gold.toLocaleString()}</span>
+                </div>
+
+                {shop.totalGoldRequired > 0 ? (
+                  <>
+                    <hr className="ic-divider" />
+                    <div className="ic-summary-row ic-gold-needed">
+                      <span>💰 Total Gold Still Needed</span>
+                      <span className="ic-gold-needed-value">{shop.totalGoldRequired.toLocaleString()}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <hr className="ic-divider" />
+                    <div className="ic-all-good">✅ You have enough gold to cover everything!</div>
+                  </>
+                )}
+
+                {shop.hasRemaining && (
+                  <>
+                    <hr className="ic-divider" />
+                    <div className="ic-remaining">
+                      <h3>📦 Resources Remaining After Upgrade</h3>
+                      {shop.goldRemaining > 0 && (
+                        <div className="ic-remaining-row">
+                          <span>💰 Gold</span>
+                          <span className="ok-text">{shop.goldRemaining.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {shop.woodRemaining > 0 && (
+                        <div className="ic-remaining-row">
+                          <span>🪵 Wood</span>
+                          <span className="ok-text">{shop.woodRemaining.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {shop.stoneRemaining > 0 && (
+                        <div className="ic-remaining-row">
+                          <span>🪨 Stone</span>
+                          <span className="ok-text">{shop.stoneRemaining.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="ic-shop-none">✅ You already have enough wood and stone — no shop needed!</div>
+          )}
+        </section>
+      </main>
+
+      <div className="ticks" />
+      <footer className="app-footer"><p>Built with ❤️ for tracking daily farming routines.</p></footer>
+    </div>
+  );
 }
 
 /* ---------- dashboard ---------- */
-function Dashboard({ user, onLogout }) {
+function Dashboard({ user, onLogout, onGoToImperialCity }) {
   const [tuyuls, setTuyuls] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -220,6 +433,7 @@ function Dashboard({ user, onLogout }) {
           </div>
         </div>
         <div className="header-actions">
+          <button onClick={onGoToImperialCity} className="btn btn-primary">Imperial City</button>
           <span className="user-badge">👤 {user.username}</span>
           <button onClick={onLogout} className="btn btn-outline">Logout</button>
         </div>

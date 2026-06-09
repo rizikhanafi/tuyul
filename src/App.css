@@ -842,3 +842,241 @@ input[type="number"] {
     font-size: 12px;
   }
 }
+
+/* ==========================================
+   IMPERIAL CITY
+   ========================================== */
+
+.ic-section {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.ic-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 16px;
+}
+
+/* Input grid */
+.ic-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.ic-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ic-input-field label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.ic-input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-size: 14px;
+  font-family: var(--mono);
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.ic-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+/* Shop section */
+.ic-shop-rate {
+  font-size: 13px;
+  color: var(--text);
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.ic-shop-result {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ic-shop-buy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ic-shop-buy h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 4px;
+}
+
+.ic-shop-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--code-bg);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.ic-shop-summary {
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ic-shop-summary.ok {
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.ic-shop-summary.short {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.ic-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.ic-summary-row.ic-total {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.ic-summary-row.ic-gold-needed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-h);
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+}
+
+.ic-gold-needed-value {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.ic-remaining {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: 8px;
+}
+
+.ic-remaining h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 2px;
+}
+
+.ic-remaining-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.ic-all-good {
+  margin-top: 4px;
+  padding: 10px 14px;
+  background: rgba(34, 197, 94, 0.08);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #16a34a;
+  text-align: center;
+}
+
+.ic-shop-none {
+  padding: 16px;
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #16a34a;
+  text-align: center;
+  font-weight: 500;
+}
+
+.ic-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4px 0;
+}
+
+.gold-text {
+  font-family: var(--mono);
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.ok-text {
+  font-family: var(--mono);
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.short-text {
+  font-family: var(--mono);
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Imperial City responsive */
+@media (max-width: 768px) {
+  .ic-input-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ic-shop-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .ic-section {
+    padding: 16px;
+  }
+}
